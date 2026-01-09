@@ -12,14 +12,24 @@ namespace CHESS_coursework
         public ChessGame()
         {
             b = new Board();
-
+            
         }
-
-        public Board getBoard() { return b; }
-
-        public void doSomething()
+        public Piece GetPieceFromBoard(int x, int y)
         {
-            b.checkwin();
+            return b.GetPiece(x,y);
         }
+        public Piece[,] GetBoard() { return b.GetGrid(); }
+        public bool[,]? SelectedSquares(int x, int y)
+        {
+            return b.SelectedSquare( x,y);
+        }
+        public void PlayMove(int startX, int startY, int endX, int endY)
+        {
+            b.MovePiece(startX, startY, endX, endY);
+        }
+        /* public void CreateChess()
+         {
+             b.CreateBoard();
+         }*/
     }
 }

@@ -9,4 +9,35 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Chess_bdt60.png" />
+    <None Remove="Chess_blt60.png" />
+    <None Remove="Chess_kdt60.png" />
+    <None Remove="Chess_klt60.png" />
+    <None Remove="Chess_ndt60.png" />
+    <None Remove="Chess_nlt60.png" />
+    <None Remove="Chess_pdt60.png" />
+    <None Remove="Chess_plt60.png" />
+    <None Remove="Chess_qdt60.png" />
+    <None Remove="Chess_qlt60.png" />
+    <None Remove="Chess_rdt60.png" />
+    <None Remove="Chess_rlt60.png" />
+    <None Remove="images\Chess_bdt60.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\Chess_bdt60.png" />
+    <Resource Include="images\Chess_blt60.png" />
+    <Resource Include="images\Chess_kdt60.png" />
+    <Resource Include="images\Chess_klt60.png" />
+    <Resource Include="images\Chess_ndt60.png" />
+    <Resource Include="images\Chess_nlt60.png" />
+    <Resource Include="images\Chess_pdt60.png" />
+    <Resource Include="images\Chess_plt60.png" />
+    <Resource Include="images\Chess_qdt60.png" />
+    <Resource Include="images\Chess_qlt60.png" />
+    <Resource Include="images\Chess_rdt60.png" />
+    <Resource Include="images\Chess_rlt60.png" />
+  </ItemGroup>
+
 </Project>

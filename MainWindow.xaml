@@ -5,33 +5,120 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CHESS_coursework"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition  />
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition  />
-            <RowDefinition  />
-            <RowDefinition  />
-            <RowDefinition  />
-            <RowDefinition  />
-            <RowDefinition  />
-            <RowDefinition />
-            <RowDefinition  />
-        </Grid.RowDefinitions>
-        <Button Grid.Column="1" x:Name="b1" Click="b1_Click" Margin="0,54,0,0" Grid.RowSpan="2">button 1</Button>
-        <TextBox x:Name="T1" Grid.Column="2" Grid.Row ="2" HorizontalAlignment="Center" Margin="0,49,0,0"  TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="100" Height="12"/>
+        Title="MainWindow" Height="1000" Width="1100">
+    <DockPanel>
+        <Border Width="200" Background="Navy"  DockPanel.Dock="Left" >
+            <Button Content="Start Game"
+        FontSize="36"
+        HorizontalAlignment="Stretch"
+        Height="130"
+        Margin="10"
+        ClickMode="Press"
+        Click="InitialiseClick"
+        x:Name="InitialiseButton"
+        />
+        </Border>
+        <Border Width="10" Background="Gold" DockPanel.Dock="Left"/>
 
-    </Grid>
+        <Grid x:Name="chessGrid">
 
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Rectangle Grid.Row="0" Grid.Column="0" Fill="White"/>
+            <Rectangle Grid.Row="0" Grid.Column="1" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="0" Grid.Column="2" Fill="White"/>
+            <Rectangle Grid.Row="0" Grid.Column="3" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="0" Grid.Column="4" Fill="White"/>
+            <Rectangle Grid.Row="0" Grid.Column="5" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="0" Grid.Column="6" Fill="White"/>
+            <Rectangle Grid.Row="0" Grid.Column="7" Fill="#8B5A2B"/>
+
+            <Rectangle Grid.Row="1" Grid.Column="0" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="1" Grid.Column="1" Fill="White"/>
+            <Rectangle Grid.Row="1" Grid.Column="2" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="1" Grid.Column="3" Fill="White"/>
+            <Rectangle Grid.Row="1" Grid.Column="4" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="1" Grid.Column="5" Fill="White"/>
+            <Rectangle Grid.Row="1" Grid.Column="6" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="1" Grid.Column="7" Fill="White"/>
+
+            <Rectangle Grid.Row="2" Grid.Column="0" Fill="White"/>
+            <Rectangle Grid.Row="2" Grid.Column="1" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="2" Grid.Column="2" Fill="White"/>
+            <Rectangle Grid.Row="2" Grid.Column="3" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="2" Grid.Column="4" Fill="White"/>
+            <Rectangle Grid.Row="2" Grid.Column="5" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="2" Grid.Column="6" Fill="White"/>
+            <Rectangle Grid.Row="2" Grid.Column="7" Fill="#8B5A2B"/>
+
+            <Rectangle Grid.Row="3" Grid.Column="0" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="3" Grid.Column="1" Fill="White"/>
+            <Rectangle Grid.Row="3" Grid.Column="2" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="3" Grid.Column="3" Fill="White"/>
+            <Rectangle Grid.Row="3" Grid.Column="4" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="3" Grid.Column="5" Fill="White"/>
+            <Rectangle Grid.Row="3" Grid.Column="6" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="3" Grid.Column="7" Fill="White"/>
+
+            <Rectangle Grid.Row="4" Grid.Column="0" Fill="White"/>
+            <Rectangle Grid.Row="4" Grid.Column="1" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="4" Grid.Column="2" Fill="White"/>
+            <Rectangle Grid.Row="4" Grid.Column="3" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="4" Grid.Column="4" Fill="White"/>
+            <Rectangle Grid.Row="4" Grid.Column="5" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="4" Grid.Column="6" Fill="White"/>
+            <Rectangle Grid.Row="4" Grid.Column="7" Fill="#8B5A2B"/>
+
+            <Rectangle Grid.Row="5" Grid.Column="0" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="5" Grid.Column="1" Fill="White"/>
+            <Rectangle Grid.Row="5" Grid.Column="2" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="5" Grid.Column="3" Fill="White"/>
+            <Rectangle Grid.Row="5" Grid.Column="4" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="5" Grid.Column="5" Fill="White"/>
+            <Rectangle Grid.Row="5" Grid.Column="6" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="5" Grid.Column="7" Fill="White"/>
+
+            <Rectangle Grid.Row="6" Grid.Column="0" Fill="White"/>
+            <Rectangle Grid.Row="6" Grid.Column="1" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="6" Grid.Column="2" Fill="White"/>
+            <Rectangle Grid.Row="6" Grid.Column="3" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="6" Grid.Column="4" Fill="White"/>
+            <Rectangle Grid.Row="6" Grid.Column="5" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="6" Grid.Column="6" Fill="White"/>
+            <Rectangle Grid.Row="6" Grid.Column="7" Fill="#8B5A2B"/>
+
+            <Rectangle Grid.Row="7" Grid.Column="0" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="7" Grid.Column="1" Fill="White"/>
+            <Rectangle Grid.Row="7" Grid.Column="2" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="7" Grid.Column="3" Fill="White"/>
+            <Rectangle Grid.Row="7" Grid.Column="4" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="7" Grid.Column="5" Fill="White"/>
+            <Rectangle Grid.Row="7" Grid.Column="6" Fill="#8B5A2B"/>
+            <Rectangle Grid.Row="7" Grid.Column="7" Fill="White"/>
+
+
+
+        </Grid>
+    </DockPanel>
 
 </Window>
