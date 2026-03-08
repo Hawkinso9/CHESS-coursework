@@ -12,7 +12,9 @@ using System.Windows.Shapes;
 namespace CHESS_coursework
 {
     /// <summary> 
-    /// Interaction logic for MainWindow.xaml
+    ///  UI only: buttons, highlights, showing messages, reading user clicks
+    //  Should NOT contain chess rules or board logic
+    //  Should NOT call Board directly Should call ChessGame public methods
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -20,74 +22,95 @@ namespace CHESS_coursework
         private bool gamestarted;
         private Button[,] buttons = new Button[8, 8];
         private Tuple<int, int>? selectedSquare = null;//this tracks square the user selected first(piece they will move)
-        private bool[,] Highlighted = new bool[8, 8]; //used to highlight possible moves
+        private bool[,] highlighted = new bool[8, 8]; //used to highlight possible moves
         public MainWindow()
         {
             chessgame = new ChessGame();
             InitializeComponent();
             gamestarted = false;
         }
-        public void Moving_Piece(object sender, RoutedEventArgs e)
+        // TODO (later): chessgame should be constructed with settings selected in the pre-game lobby
+        //  time control, handicap settings, load game id, etc
+        private void MovingPiece(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             var position = (Tuple<int, int>)button.Tag;  //get the position of the button clicked
             int x = position.Item1;
             int y = position.Item2;
-            
+
+
             if (selectedSquare == null)
             {
-                // First click: select piece
-                bool[,]? possMoves = chessgame.SelectedSquares(x, y);//gets possible moves for the selected piece
-                if (possMoves != null) //if there are possible moves (my function returns null if no moves)
-                {
-                    selectedSquare = Tuple.Create(x, y); //store the selected square
-                    Highlighted = possMoves;
-                    for (int i = 0; i < 8; i++) //loops through the bool array to highlight poss moves
-                    {
-                        for(int j = 0; j < 8; j++)
-                        {
 
-                            if (Highlighted[i, j])
-                            {
-                                buttons[i, j].Background = Brushes.Blue; //if it is a possible move highlight it
-                            }
-                            else
-                            {
-                                buttons[i, j].Background = Brushes.Transparent; //else make it transparent
-                            }
+                bool[,] possMoves = chessgame.LegalSquares(x, y);//gets possible moves for the selected piece
+
+                if (possMoves == null)
+                {
+                    // board handled a second-click move — clear GUI selection/highlights
+                    selectedSquare = null;
+                    ClearHighlights(); // implement helper to reset Highlighted and button backgrounds
+                    updateGUI();
+                    return;
+                }
+                // First click: select piece
+                selectedSquare = Tuple.Create(x, y); //store the selected square
+                highlighted = possMoves;
+                for (int i = 0; i < 8; i++) //loops through the bool array to highlight poss moves
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+
+                        if (highlighted[i, j])
+                        {
+                            buttons[i, j].Background = Brushes.Blue; //if it is a possible move highlight it
+                        }
+                        else
+                        {
+                            buttons[i, j].Background = Brushes.Transparent; //else make it transparent
                         }
                     }
                 }
             }
+
+
+
             else
             {
                 // Second click: try to move
                 int startX = selectedSquare.Item1; //get the starting coordinates from the selected square
                 int startY = selectedSquare.Item2;
-                if (Highlighted[x, y]) //checks if the selected square is a possible move
+                if (startX == x && startY == y) //error handling for if the user clicks the same square again
                 {
-                    chessgame.PlayMove(startX, startY, x, y); //plays the move
-                    updateGUI(); //updates GUI
-                }
-                for (int i = 0; i < 8; i++) 
-                {
-                    for (int j = 0; j < 8; j++)
-                    {
-                        buttons[i, j].Background = Brushes.Transparent; //resets all button backgrounds
-                    }
-                }
-                for (int i = 0; i < 8; i++)
-                {
-                    for (int j = 0; j < 8; j++)
-                    {
-                        Highlighted[i,j] = false; //resets highlighted array
-                    }
-                }
-                selectedSquare = null; //resets selected square so logic works 
 
+                    return;
+                }
+                if (highlighted[x, y])
+                {
+                    bool movevalid = chessgame.TryMove(startX, startY, x, y);
+
+                    if (movevalid)
+                    {
+                        updateGUI(); //  always refresh after a successful move
+
+                        if (chessgame.awaitingPromotion)
+                        {
+                            Piece queen = new Queen(chessgame.currentTurn);
+                            chessgame.PromotePawn(queen);
+                            updateGUI(); //  refresh again after promotion
+                        }
+                    }
+
+                    ClearHighlights();
+                    selectedSquare = null;
+                }
+                else
+                {
+                    
+                    ClearHighlights();
+                    selectedSquare = null;
+                }
             }
         }
-
         private void InitialiseClick(object sender, RoutedEventArgs e) //starts the board
         {
             if (gamestarted) { return; } //prevents multiple clicks on the button
@@ -104,7 +127,7 @@ namespace CHESS_coursework
                         Tag = new Tuple<int, int>(x, y),
 
                     };
-                    buttons[x, y].Click += new RoutedEventHandler(Moving_Piece);
+                    buttons[x, y].Click += new RoutedEventHandler(MovingPiece);
                     Grid.SetRow(buttons[x, y], x);
                     Grid.SetColumn(buttons[x, y], y);
                     chessGrid.Children.Add(buttons[x, y]);
@@ -112,8 +135,26 @@ namespace CHESS_coursework
             }
             updateGUI();
         }
-
-        public void updateGUI()
+        private void UndoMove(object sender, RoutedEventArgs e)
+        {
+            
+                chessgame.UndoLastMove();
+            
+            updateGUI();
+        }
+        private void ClearHighlights()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    buttons[i, j].Background = Brushes.Transparent; // resets all button backgrounds
+                    highlighted[i, j] = false; // resets highlighted array
+                }
+            }
+        }
+        private void updateGUI()
+       
         {
             Piece[,] board = chessgame.GetBoard();
 
@@ -124,7 +165,7 @@ namespace CHESS_coursework
                     Piece piece = board[x, y];
                     Button btn = buttons[x, y];
 
-                    if (piece is Pawn && piece.Color == PieceColor.white)
+                    if (piece is Pawn && piece.Colour == PieceColour.white)
                     {
                         btn.Content = new Image
                         {
@@ -132,7 +173,7 @@ namespace CHESS_coursework
                         };
                         btn.Opacity = 1;
                     }
-                    else if (piece is Pawn && piece.Color == PieceColor.black)
+                    else if (piece is Pawn && piece.Colour == PieceColour.black)
                     {
                         btn.Content = new Image
                         {
@@ -140,7 +181,7 @@ namespace CHESS_coursework
                         };
                         btn.Opacity = 1;
                     }
-                    else if (piece is Rook && piece.Color == PieceColor.white)
+                    else if (piece is Rook && piece.Colour == PieceColour.white)
                     {
                         btn.Content = new Image
                         {
@@ -148,7 +189,7 @@ namespace CHESS_coursework
                         };
                         btn.Opacity = 1;
                     }
-                    else if (piece is Rook && piece.Color == PieceColor.black)
+                    else if (piece is Rook && piece.Colour == PieceColour.black)
                     {
                         btn.Content = new Image
                         {
@@ -156,7 +197,7 @@ namespace CHESS_coursework
                         };
                         btn.Opacity = 1;
                     }
-                    else if (piece is Knight && piece.Color == PieceColor.white)
+                    else if (piece is Knight && piece.Colour == PieceColour.white)
                     {
                         btn.Content = new Image
                         {
@@ -164,7 +205,7 @@ namespace CHESS_coursework
                         };
                         btn.Opacity = 1;
                     }
-                    else if (piece is Knight && piece.Color == PieceColor.black)
+                    else if (piece is Knight && piece.Colour == PieceColour.black)
                     {
                         btn.Content = new Image
                         {
@@ -172,7 +213,7 @@ namespace CHESS_coursework
                         };
                         btn.Opacity = 1;
                     }
-                    else if (piece is Bishop && piece.Color == PieceColor.white)
+                    else if (piece is Bishop && piece.Colour == PieceColour.white)
                     {
                         btn.Content = new Image
                         {
@@ -180,7 +221,7 @@ namespace CHESS_coursework
                         };
                         btn.Opacity = 1;
                     }
-                    else if (piece is Bishop && piece.Color == PieceColor.black)
+                    else if (piece is Bishop && piece.Colour == PieceColour.black)
                     {
                         btn.Content = new Image
                         {
@@ -188,7 +229,7 @@ namespace CHESS_coursework
                         };
                         btn.Opacity = 1;
                     }
-                    else if (piece.GetType() == typeof(Queen) && piece.Color == PieceColor.white)
+                    else if (piece.GetType() == typeof(Queen) && piece.Colour == PieceColour.white)
                     {
                         btn.Content = new Image
                         {
@@ -196,7 +237,7 @@ namespace CHESS_coursework
                         };
                         btn.Opacity = 1;
                     }
-                    else if (piece is Queen && piece.Color == PieceColor.black)
+                    else if (piece is Queen && piece.Colour == PieceColour.black)
                     {
                         btn.Content = new Image
                         {
@@ -204,7 +245,7 @@ namespace CHESS_coursework
                         };
                         btn.Opacity = 01;
                     }
-                    else if (piece is King && piece.Color == PieceColor.white)
+                    else if (piece is King && piece.Colour == PieceColour.white)
                     {
                         btn.Content = new Image
                         {
@@ -212,7 +253,7 @@ namespace CHESS_coursework
                         };
                         btn.Opacity = 01;
                     }
-                    else if (piece is King && piece.Color == PieceColor.black)
+                    else if (piece is King && piece.Colour == PieceColour.black)
                     {
                         btn.Content = new Image
                         {
@@ -235,6 +276,6 @@ namespace CHESS_coursework
                 }
             }
         }
-
+        
     }
 }
