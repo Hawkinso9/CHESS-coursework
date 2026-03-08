@@ -161,8 +161,7 @@ namespace CHESS_coursework //how to store moves, whether to store a white and bl
                 if ((y == 1 && pawn.Color == PieceColor.white) || (y == 6 && pawn.Color == PieceColor.black))
                 {
                     int direction = (pawn.Color == PieceColor.white) ? -1 : 1; //sets direction based on color
-                    int[,] PawnMoves =
-                        { { y, x + direction },{ y, x + 2 * direction }};
+                    int[,] PawnMoves ={ { y, x + direction },{ y, x + 2 * direction }};
                     for (int i = 0; i != 2; i++) //loops through all possible pawn moves
                     {
                         int tempx = PawnMoves[i, 0];//gets x coordinate of possible move
